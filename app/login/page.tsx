@@ -1,7 +1,7 @@
 "use client";
 
+import { AuthShell } from "@/components/auth/auth-shell";
 import { SessionSplash } from "@/components/auth/session-splash";
-import { BrandLogo } from "@/components/icons/brand-logo";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,12 @@ import { authService } from "@/lib/services";
 import type { UserRole } from "@/lib/types";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, Suspense, useEffect, useState } from "react";
+import {
+  FormEvent,
+  Suspense,
+  useEffect,
+  useState,
+} from "react";
 
 function roleHome(role: UserRole) {
   if (role === "farmer") return "/farmer";
@@ -57,99 +62,70 @@ function LoginForm() {
 
   if (loading || user) {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center bg-warm-parchment">
+      <div className="flex min-h-screen items-center justify-center bg-warm-parchment">
         <SessionSplash label={user ? "Opening dashboard" : "Loading"} />
       </div>
     );
   }
 
   return (
-    <div className="relative flex min-h-full flex-1 items-center justify-center overflow-hidden bg-warm-parchment px-4 py-10">
-      {/* Soft background accents */}
-      <div
-        className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-lime-sprout/35 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-forest-canopy/10 blur-3xl"
-        aria-hidden
-      />
+    <AuthShell
+      heading="Welcome back"
+      subheading="Sign in with your email or phone to continue to NAUB Agric Connect."
+    >
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        <Input
+          label="Email or phone number"
+          name="identifier"
+          type="text"
+          autoComplete="username"
+          placeholder="you@example.com or 0803…"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          required
+        />
+        <PasswordInput
+          label="Password"
+          name="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-      <div className="relative w-full max-w-[420px]">
-        <div className="rounded-[28px] border border-forest-canopy/10 bg-warm-parchment p-6 shadow-[0_24px_60px_-20px_rgba(28,58,19,0.18)] sm:p-8">
-          <div className="mb-6 flex flex-col items-center text-center">
-            <span className="mb-4">
-              <BrandLogo size={48} />
-            </span>
-            <h1 className="text-heading-sm font-medium tracking-tight sm:text-heading">
-              Welcome back
-            </h1>
-            <p className="mt-2 text-body-sm text-forest-canopy/70">
-              Sign in to continue to NAUB Agric Connect
-            </p>
-          </div>
-
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
-            <Input
-              label="Email or phone number"
-              name="identifier"
-              type="text"
-              autoComplete="username"
-              placeholder="you@example.com or 0803…"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              required
-            />
-            <PasswordInput
-              label="Password"
-              name="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              showLiveHints
-              required
-            />
-            {error ? (
-              <p
-                role="alert"
-                className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
-              >
-                {error}
-              </p>
-            ) : null}
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="mt-1 w-full"
-            >
-              {submitting ? "Signing in…" : "Sign in"}
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-body-sm text-forest-canopy/75">
-            New here?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-forest-canopy underline-offset-4 hover:underline"
-            >
-              Create an account
-            </Link>
-          </p>
-          <p className="mt-3 text-center text-[12px] text-forest-canopy/50">
-            Demo: phone 08031112222 · password password123
-          </p>
-        </div>
-
-        <p className="mt-5 text-center">
-          <Link
-            href="/"
-            className="text-body-sm text-forest-canopy/60 underline-offset-4 hover:underline"
+        {error ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
           >
-            Back to home
+            {error}
+          </p>
+        ) : null}
+
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="mt-1 w-full"
+        >
+          {submitting ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
+
+      <div className="mt-8 flex flex-col items-center gap-4">
+        <p className="text-body-sm text-forest-canopy/70">
+          New here?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-forest-canopy underline-offset-4 hover:underline"
+          >
+            Create an account
           </Link>
         </p>
+        <p className="text-center text-[12px] text-forest-canopy/45">
+          Demo · phone 08031112222 · password password123
+        </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }
 
@@ -157,7 +133,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-full flex-1 items-center justify-center bg-warm-parchment">
+        <div className="flex min-h-screen items-center justify-center bg-warm-parchment">
           <SessionSplash />
         </div>
       }

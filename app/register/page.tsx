@@ -1,7 +1,7 @@
 "use client";
 
+import { AuthShell } from "@/components/auth/auth-shell";
 import { SessionSplash } from "@/components/auth/session-splash";
-import { BrandLogo } from "@/components/icons/brand-logo";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -89,150 +89,127 @@ function RegisterForm() {
 
   if (loading || user) {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center bg-warm-parchment">
+      <div className="flex min-h-screen items-center justify-center bg-warm-parchment">
         <SessionSplash label={user ? "Opening dashboard" : "Loading"} />
       </div>
     );
   }
 
   return (
-    <div className="relative flex min-h-full flex-1 items-center justify-center overflow-hidden bg-warm-parchment px-4 py-10">
-      <div
-        className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-lime-sprout/35 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-forest-canopy/10 blur-3xl"
-        aria-hidden
-      />
-
-      <div className="relative w-full max-w-[440px]">
-        <div className="rounded-[28px] border border-forest-canopy/10 bg-warm-parchment p-6 shadow-[0_24px_60px_-20px_rgba(28,58,19,0.18)] sm:p-8">
-          <div className="mb-6 flex flex-col items-center text-center">
-            <span className="mb-4">
-              <BrandLogo size={48} />
-            </span>
-            <h1 className="text-heading-sm font-medium tracking-tight sm:text-heading">
-              Create account
-            </h1>
-            <p className="mt-2 text-body-sm text-forest-canopy/70">
-              Under three minutes. Your WhatsApp number is your contact on listings.
-            </p>
+    <AuthShell
+      heading="Create your account"
+      subheading="Under three minutes. Your WhatsApp number is your contact on every listing."
+    >
+      <form onSubmit={onSubmit} className="flex flex-col gap-4">
+        {/* Role selector */}
+        <fieldset>
+          <legend className="mb-2 text-body-sm font-medium text-forest-canopy">
+            I am a…
+          </legend>
+          <div className="grid grid-cols-2 gap-2">
+            {(
+              [
+                { value: "farmer", label: "Farmer" },
+                { value: "buyer", label: "Buyer" },
+              ] as const
+            ).map((opt) => {
+              const active = role === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setRole(opt.value)}
+                  aria-pressed={active}
+                  className={[
+                    "min-h-12 rounded-xl border px-3 py-2 text-body-sm font-medium transition-colors",
+                    active
+                      ? "border-forest-canopy bg-forest-canopy text-warm-parchment"
+                      : "border-forest-canopy/20 bg-warm-parchment text-forest-canopy hover:bg-pale-stone",
+                  ].join(" ")}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
           </div>
+        </fieldset>
 
-          <form onSubmit={onSubmit} className="flex flex-col gap-4">
-            <fieldset>
-              <legend className="mb-2 text-body-sm font-medium">I am a…</legend>
-              <div className="grid grid-cols-2 gap-2">
-                {(
-                  [
-                    { value: "farmer", label: "Farmer" },
-                    { value: "buyer", label: "Buyer" },
-                  ] as const
-                ).map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => setRole(opt.value)}
-                    className={[
-                      "min-h-11 rounded-full border px-3 py-2 text-body-sm font-medium transition-colors",
-                      role === opt.value
-                        ? "border-forest-canopy bg-forest-canopy text-warm-parchment"
-                        : "border-forest-canopy/25 bg-warm-parchment text-forest-canopy",
-                    ].join(" ")}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </fieldset>
+        <Input
+          label="Full name"
+          name="full_name"
+          autoComplete="name"
+          placeholder="e.g. Musa Ibrahim"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+        />
+        <Input
+          label="Email address"
+          name="email"
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <Input
+          label="WhatsApp phone number"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="0803…"
+          hint="Used as your contact on listings (buyers and farmers)."
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          required
+        />
+        <Select
+          label="Local Government Area (LGA)"
+          name="lga"
+          value={lga}
+          onChange={(e) => setLga(e.target.value)}
+          placeholder="Select LGA"
+          options={LGA_OPTIONS.map((x) => ({ value: x, label: x }))}
+          required
+        />
+        <PasswordInput
+          label="Password"
+          name="password"
+          autoComplete="new-password"
+          showLiveHints
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          minLength={6}
+        />
 
-            <Input
-              label="Full name"
-              name="full_name"
-              autoComplete="name"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-            <Input
-              label="Email address"
-              name="email"
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input
-              label="WhatsApp phone number"
-              name="phone"
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="0803…"
-              hint="This number is used for WhatsApp contact on listings (buyers and farmers)."
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-            <Select
-              label="Local Government Area (LGA)"
-              name="lga"
-              value={lga}
-              onChange={(e) => setLga(e.target.value)}
-              placeholder="Select LGA"
-              options={LGA_OPTIONS.map((x) => ({ value: x, label: x }))}
-              required
-            />
-            <PasswordInput
-              label="Password"
-              name="password"
-              autoComplete="new-password"
-              showLiveHints
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-            />
-
-            {error ? (
-              <p
-                role="alert"
-                className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
-              >
-                {error}
-              </p>
-            ) : null}
-
-            <Button type="submit" disabled={submitting} className="w-full">
-              {submitting ? "Creating account…" : "Create account"}
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-body-sm text-forest-canopy/75">
-            Already registered?{" "}
-            <Link
-              href="/login"
-              className="font-medium underline-offset-4 hover:underline"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div>
-
-        <p className="mt-5 text-center">
-          <Link
-            href="/"
-            className="text-body-sm text-forest-canopy/60 underline-offset-4 hover:underline"
+        {error ? (
+          <p
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
           >
-            Back to home
-          </Link>
-        </p>
-      </div>
-    </div>
+            {error}
+          </p>
+        ) : null}
+
+        <Button type="submit" disabled={submitting} className="mt-1 w-full">
+          {submitting ? "Creating account…" : "Create account"}
+        </Button>
+      </form>
+
+      <p className="mt-8 text-center text-body-sm text-forest-canopy/70">
+        Already registered?{" "}
+        <Link
+          href="/login"
+          className="font-medium text-forest-canopy underline-offset-4 hover:underline"
+        >
+          Sign in
+        </Link>
+      </p>
+    </AuthShell>
   );
 }
 
@@ -240,7 +217,7 @@ export default function RegisterPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-full flex-1 items-center justify-center bg-warm-parchment">
+        <div className="flex min-h-screen items-center justify-center bg-warm-parchment">
           <SessionSplash />
         </div>
       }

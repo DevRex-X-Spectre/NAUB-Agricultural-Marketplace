@@ -18,6 +18,11 @@ type BrandLogoProps = {
   withWordmark?: boolean;
   /** Show a small "Marketplace" eyebrow under the wordmark (header only). */
   withEyebrow?: boolean;
+  /**
+   * Wordmark text colour. `dark` (forest-canopy) for light surfaces,
+   * `light` (warm-parchment) for the dark brand panel. Default `dark`.
+   */
+  tone?: "dark" | "light";
   className?: string;
   /** Forwarded to the inner <span> for layout tweaks. */
   style?: CSSProperties;
@@ -41,6 +46,7 @@ export function BrandLogo({
   size = 32,
   withWordmark = false,
   withEyebrow = false,
+  tone = "dark",
   className,
   style,
 }: BrandLogoProps) {
@@ -96,6 +102,15 @@ export function BrandLogo({
 
   if (!withWordmark) return mark;
 
+  const wordmarkColor =
+    tone === "light"
+      ? "text-warm-parchment"
+      : "text-forest-canopy";
+  const eyebrowColor =
+    tone === "light"
+      ? "text-warm-parchment/55"
+      : "text-forest-canopy/55";
+
   return (
     <span
       className="inline-flex items-center gap-2.5"
@@ -103,11 +118,15 @@ export function BrandLogo({
     >
       {mark}
       <span className="flex flex-col leading-none">
-        <span className="text-body font-medium tracking-[-0.4px] text-forest-canopy">
+        <span
+          className={`text-body font-medium tracking-[-0.4px] ${wordmarkColor}`}
+        >
           NAUB Agric Connect
         </span>
         {withEyebrow ? (
-          <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-forest-canopy/55">
+          <span
+            className={`mt-1 text-[10px] font-medium uppercase tracking-[0.18em] ${eyebrowColor}`}
+          >
             Marketplace
           </span>
         ) : null}
