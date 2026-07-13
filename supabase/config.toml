@@ -1,0 +1,20 @@
+# Minimal Supabase CLI config for local dev (Part B8).
+# Full project: run `supabase init` if you need generated defaults.
+
+project_id = "naub_agri_marketplace"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
