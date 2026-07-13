@@ -22,6 +22,7 @@ import {
   SESSION_TTL_MS,
   createSessionToken,
 } from "@/lib/utils/session-token";
+import { translateAuthError } from "@/lib/utils/auth-errors";
 import { validationService } from "./validation-service";
 
 function toPublicUser(user: User): PublicUser {
@@ -195,7 +196,7 @@ export class AuthService {
     });
 
     if (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: translateAuthError(error.message).message };
     }
     if (!data.user) {
       return { success: false, error: "Registration failed. No user returned." };
@@ -278,7 +279,10 @@ export class AuthService {
   ): Promise<ServiceResult<{ user: PublicUser; session: Session }>> {
     let user = await userRepository.findByPhoneOrEmail(identifier);
     if (!user) {
-      return { success: false, error: "Invalid email/phone or password" };
+      return {
+        success: false,
+        error: translateAuthError("Invalid email/phone or password").message,
+      };
     }
 
     const ok = await verifyPassword(
@@ -287,7 +291,10 @@ export class AuthService {
       user.password_hash
     );
     if (!ok) {
-      return { success: false, error: "Invalid email/phone or password" };
+      return {
+        success: false,
+        error: translateAuthError("Invalid email/phone or password").message,
+      };
     }
 
     user = await ensureEnvAdminRole(user);
@@ -344,7 +351,7 @@ export class AuthService {
     if (error || !data.session) {
       return {
         success: false,
-        error: error?.message ?? "Invalid email/phone or password",
+        error: translateAuthError(error?.message).message,
       };
     }
 
@@ -374,6 +381,31 @@ export class AuthService {
       await supabase.auth.signOut();
     }
     writeLocalSession(null);
+    return { success: true, data: true };
+  }
+
+  /**
+   * Re-send the Supabase email-confirmation link. No-op in local mode.
+   * Used by the auth screens when the user sees `email_not_confirmed`.
+   *
+   * Always returns success-shaped; the user may simply have no pending
+   * confirmation (which is fine — they'll see the success message).
+   */
+  async resendConfirmation(
+    email: string
+  ): Promise<ServiceResult<true>> {
+    if (!isSupabase) return { success: true, data: true };
+    if (!email.trim()) {
+      return { success: false, error: "Enter the email you signed up with" };
+    }
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim(),
+    });
+    if (error) {
+      return { success: false, error: translateAuthError(error.message).message };
+    }
     return { success: true, data: true };
   }
 

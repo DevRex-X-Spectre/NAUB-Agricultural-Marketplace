@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthError } from "@/components/auth/auth-error";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SessionSplash } from "@/components/auth/session-splash";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -186,14 +187,7 @@ function RegisterForm() {
           minLength={6}
         />
 
-        {error ? (
-          <p
-            role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
-          >
-            {error}
-          </p>
-        ) : null}
+        {error ? <AuthError error={error} email={email} /> : null}
 
         <Button type="submit" disabled={submitting} className="mt-1 w-full">
           {submitting ? "Creating account…" : "Create account"}

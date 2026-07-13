@@ -1,5 +1,6 @@
 "use client";
 
+import { AuthError } from "@/components/auth/auth-error";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SessionSplash } from "@/components/auth/session-splash";
 import { useAuth } from "@/components/providers/auth-provider";
@@ -94,12 +95,7 @@ function LoginForm() {
         />
 
         {error ? (
-          <p
-            role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-body-sm text-red-700"
-          >
-            {error}
-          </p>
+          <AuthError error={error} email={identifier} />
         ) : null}
 
         <Button

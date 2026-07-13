@@ -98,7 +98,31 @@ In Supabase → **Authentication → URL configuration**:
 - Site URL: `https://your-app.vercel.app`
 - Redirect URLs: `https://your-app.vercel.app/**`
 
-(Email confirmation can stay disabled for phone-style synthetic emails used by this app.)
+### 5. ⚠️ Email confirmation MUST be OFF
+
+This app is **phone-first** — accounts use a synthetic email
+(`<digits>@phone.naub-agri.local`) and the WhatsApp number on the
+listing is the actual contact channel. Email confirmation does nothing
+useful for this flow, and Supabase's free tier rate-limits outbound mail
+aggressively, so leaving it ON produces
+`email_rate_limit_exceeded` after a few sign-ups.
+
+In Supabase → **Authentication → Providers → Email**:
+
+- **Confirm email → OFF**  *(must be off — see warning above)*
+- Secure password change → ON (recommended)
+- Save.
+
+If you ever flip it back on for testing, the auth screens will surface
+the rate limit as a clear error with a one-click "Resend confirmation
+email" button.
+
+---
+
+> If sign-ups start failing with `email_rate_limit_exceeded` on the
+> deployed site, this toggle is the cause 99 % of the time. Fix it,
+> wait a few minutes for the rate limit to clear, and sign-ups work
+> again without code changes.
 
 ---
 

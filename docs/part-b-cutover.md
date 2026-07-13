@@ -49,6 +49,7 @@ npm run dev
 - [ ] Production build bundle has **no** `service_role` string  
 - [ ] Storage folder policy: only own `auth.uid()` prefix  
 - [ ] Auth rate limits: Supabase defaults + monitor abuse  
+- [ ] **Email confirmation turned OFF** in Supabase → Authentication → Providers → Email — required for this phone-first app, see [deployment.md §5](./deployment.md)
 
 ## 5. Rollback
 
