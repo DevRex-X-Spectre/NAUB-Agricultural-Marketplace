@@ -106,15 +106,7 @@ function RegisterForm() {
         aria-hidden
       />
 
-      <div
-        className={[
-          "relative w-full max-w-[440px]",
-          "transition-all duration-500 ease-out",
-          mounted
-            ? "translate-y-0 scale-100 opacity-100"
-            : "translate-y-6 scale-[0.96] opacity-0",
-        ].join(" ")}
-      >
+      <div className="relative w-full max-w-[440px]">
         <div className="rounded-[28px] border border-forest-canopy/10 bg-warm-parchment p-6 shadow-[0_24px_60px_-20px_rgba(28,58,19,0.18)] sm:p-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <span className="mb-4">
