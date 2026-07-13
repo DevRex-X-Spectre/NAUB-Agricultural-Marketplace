@@ -18,7 +18,7 @@ SUPABASE_SERVICE_ROLE_KEY=<service-role-key>
 ```
 
 ```bash
-npm run seed:supabase      # demo auth users + sample listing
+npm run seed:supabase      # demo users + 12 listings + categories + transport
 npm run dev
 ```
 
@@ -26,10 +26,35 @@ npm run dev
 
 1. Create project in Supabase Dashboard  
 2. `supabase link --project-ref <ref>`  
-3. `supabase db push`  
+3. `supabase db push`  *(or paste `supabase/full_migration.sql` into SQL Editor)*  
 4. Set Vercel/hosting env vars (anon only in Next.js; never service role)  
 5. `NEXT_PUBLIC_DATA_SOURCE=supabase`  
-6. Optional: `SUPABASE_SERVICE_ROLE_KEY` only on CI for seeding a demo environment  
+6. Run the seed script locally with the **service role key** to populate the catalogue:
+
+```bash
+export SUPABASE_URL=https://xxxx.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY=<from Supabase Dashboard → Settings → API>
+npm run seed:supabase
+```
+
+Output:
+
+```
+✓ Seed complete
+  categories:      8
+  transport:       3
+  users:           4
+  listings:        12
+  demo password:   password123
+
+Demo logins (phone, password123):
+  08010000001     admin    Admin NAUB
+  08031112222     farmer   Musa Ibrahim
+  08033334444     farmer   Aisha Bello
+  08037778888     buyer    Fatima Sani
+```
+
+The script is idempotent: re-running it upserts categories + users and replaces the product listings. You can run it any time to reset the catalogue.  
 
 ## 3. Smoke tests after cutover
 

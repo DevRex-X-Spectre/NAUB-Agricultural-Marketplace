@@ -79,7 +79,21 @@ vercel
 3. Deploy. Vercel builds with `next build` and serves on a `*.vercel.app` URL (custom domain optional).  
 Listing photos use Cloudinary even when product rows live in Supabase.
 
-### 3. First admin
+### 3. First admin + demo data
+
+**Seed the catalogue (hosted project):**
+
+The deployed app starts with an empty catalogue. Populate it with demo users + 12 listings by running the seed script once locally with your service-role key:
+
+```bash
+export SUPABASE_URL=https://xxxx.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY=<from Supabase Dashboard → Settings → API>
+npm run seed:supabase
+```
+
+The script is idempotent — re-run any time to reset the catalogue.
+
+**First admin:**
 
 1. Open the live site → **Register** with the phone in `NEXT_PUBLIC_ADMIN_PHONE`.
 2. Sign in → you should reach **`/admin`**.
@@ -90,6 +104,10 @@ update public.profiles
 set role = 'admin', verification_status = 'verified'
 where phone = '0803XXXXXXX';
 ```
+
+> The seed script also creates an admin user using the same phone as
+> `NEXT_PUBLIC_ADMIN_PHONE`. So after seeding, you can sign in as admin
+> directly with that phone + the password `password123`.
 
 ### 4. Auth redirect URLs (Supabase)
 

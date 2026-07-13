@@ -42,3 +42,12 @@ next-env.d.ts
 
 .claude
 /docs
+
+export SUPABASE_URL=https://aupanpbbntonkovtpoxg.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1cGFucGJibnRvbmtvdnRwb3hnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5Mzk4MzQsImV4cCI6MjA5OTUxNTgzNH0.RkbPr4j8NqO16JuELOeDYtB4hzZVIhD853x92WLaA6E'
+npm run seed:supabase
+
+
+export SUPABASE_URL=https://aupanpbbntonkovtpoxg.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1cGFucGJibnRvbmtvdnRwb3hnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzkzOTgzNCwiZXhwIjoyMDk5NTE1ODM0fQ._WrCDTk38coWZnRncR-xVcjkxvB1V03Fyh7G1KmIYQg'
+npm run seed:supabase
