@@ -55,12 +55,16 @@ function LoginForm() {
       <div className="mx-auto w-full max-w-md">
         <h1 className="text-heading font-light tracking-[-0.8px]">Sign in</h1>
         <p className="mt-2 text-body-sm text-forest-canopy/75">
-          Sign in with the phone number and password you used to register. New
-          here?{" "}
-          <Link href="/register" className="font-medium underline-offset-4 hover:underline">
+          Sign in with your phone and password. Demo accounts use password{" "}
+          <strong className="font-medium">password123</strong> (e.g. farmer{" "}
+          <span className="font-mono text-[13px]">08031112222</span>, buyer{" "}
+          <span className="font-mono text-[13px]">08037778888</span>).{" "}
+          <Link
+            href="/register"
+            className="font-medium underline-offset-4 hover:underline"
+          >
             Create an account
           </Link>
-          .
         </p>
 
         <Card className="mt-6 !p-5">

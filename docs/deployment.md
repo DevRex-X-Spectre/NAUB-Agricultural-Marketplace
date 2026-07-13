@@ -34,8 +34,12 @@ Good for: classroom demo, UI walkthrough, no backend setup.
    |------|--------|
    | `NEXT_PUBLIC_DATA_SOURCE` | `local` |
    | `NEXT_PUBLIC_ADMIN_PHONE` | your admin phone e.g. `0801…` |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
+| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | unsigned preset name |
 
-5. Deploy. Each visitor’s data stays **in their own browser** (not shared).
+5. Deploy. Listing photos go to Cloudinary when configured. Other data stays **in each visitor’s browser** unless you use Supabase.
+
+See **[cloudinary-setup.md](./cloudinary-setup.md)**.
 
 ```bash
 # Or CLI
@@ -69,8 +73,11 @@ vercel
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxx.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | your anon key |
 | `NEXT_PUBLIC_ADMIN_PHONE` | phone that becomes admin on register/login |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name |
+| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | unsigned upload preset |
 
-3. Deploy. Vercel builds with `next build` and serves on a `*.vercel.app` URL (custom domain optional).
+3. Deploy. Vercel builds with `next build` and serves on a `*.vercel.app` URL (custom domain optional).  
+Listing photos use Cloudinary even when product rows live in Supabase.
 
 ### 3. First admin
 
@@ -103,7 +110,7 @@ In Supabase → **Authentication → URL configuration**:
 | Session (local mode) | Browser localStorage |
 | Session (supabase) | Supabase Auth cookies (refreshed by `proxy.ts`) |
 | Passwords | Supabase Auth (production) or client hash (local only) |
-| Product photos | Supabase Storage bucket `product-images` when on supabase |
+| Product photos | **Cloudinary** (primary) via `NEXT_PUBLIC_CLOUDINARY_*`; else Supabase Storage; else local base64 |
 | Admin phone | Env only — change without redeploying code if you update env + redeploy |
 
 ---

@@ -14,25 +14,24 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-## Getting started (no demo listings)
+## Getting started
 
-The marketplace starts **empty** (categories only). Real users register and create content:
+On first load the app seeds **demo listings** (and a few accounts) so Browse is not empty. You can still register new users.
 
-1. Open **Register** → choose **Farmer** or **Buyer**
-2. **Sign in** with that phone + password
-3. Farmers list produce under **Dashboard → New listing**
-4. Buyers **Browse** and contact sellers via WhatsApp / call
+### Demo accounts (password: `password123`)
 
-### Admin phone (`.env`)
+| Role | Phone |
+|------|--------|
+| Admin | value of `NEXT_PUBLIC_ADMIN_PHONE` (default `08010000001`) |
+| Farmer | `08031112222` (Musa Ibrahim, Biu) |
+| Farmer | `08033334444` (Aisha Bello, Hawul) |
+| Buyer | `08037778888` (Fatima Sani) |
 
-```env
-NEXT_PUBLIC_ADMIN_PHONE=08010000001
-# optional multiple: 08010000001,08021112222
-```
+1. Open **Browse** to see sample produce  
+2. Sign in as buyer to contact sellers, or as farmer to manage listings  
+3. Register new accounts anytime  
 
-Register or sign in with that number → account becomes **admin** → open `/admin`. Change the env anytime; next login applies it.
-
-To wipe local data and re-bootstrap categories: `/dev/data-test` → **Wipe data & re-bootstrap**, or clear site localStorage.
+To reload demo data: `/dev/data-test` → **Wipe data & re-bootstrap**.
 
 ## Architecture
 
@@ -57,6 +56,17 @@ See **[docs/deployment.md](docs/deployment.md)** for full steps.
 2. **Real backend:** run `supabase/full_migration.sql` in Supabase SQL Editor → set Vercel env to `supabase` + project URL + **anon** key → deploy. Register with the admin phone → open `/admin`.
 
 Never put the Supabase **service_role** key in `NEXT_PUBLIC_*` or the browser.
+
+### Cloudinary (listing photos)
+
+Required for real photo uploads when creating a listing:
+
+```env
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=naub_listings
+```
+
+Setup steps: **[docs/cloudinary-setup.md](docs/cloudinary-setup.md)**.
 
 ## Routes
 

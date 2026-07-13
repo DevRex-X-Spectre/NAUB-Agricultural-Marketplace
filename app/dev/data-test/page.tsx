@@ -112,16 +112,17 @@ export default function DataTestPage() {
           >
             ← Home
           </Link>
-          <Badge tone="stone">Data layer · clean marketplace</Badge>
+          <Badge tone="stone">Data layer · demo seed</Badge>
           <h1 className="text-heading font-light tracking-[-0.8px]">
             Bootstrap & health check
           </h1>
           <p className="text-body-sm text-forest-canopy/80">
-            No demo users or listings. Register at{" "}
-            <Link href="/register" className="underline">
-              /register
-            </Link>
-            , then list as a farmer or browse as a buyer.
+            Loads demo products and accounts (password{" "}
+            <strong className="font-medium">password123</strong>). Browse{" "}
+            <Link href="/browse" className="underline">
+              /browse
+            </Link>{" "}
+            or register new users anytime.
           </p>
         </div>
 
@@ -144,10 +145,10 @@ export default function DataTestPage() {
             How to use
           </h2>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-body-sm">
-            <li>Open Register → choose Farmer or Buyer</li>
-            <li>Sign in with your phone + password</li>
-            <li>Farmers: create listings under Dashboard</li>
-            <li>Buyers: browse market and contact sellers</li>
+            <li>Run health check or wipe to reload demo listings</li>
+            <li>Browse /browse — sample maize, livestock, vegetables, etc.</li>
+            <li>Sign in: farmer 08031112222 or buyer 08037778888</li>
+            <li>Password for demo accounts: password123</li>
           </ol>
         </Card>
 

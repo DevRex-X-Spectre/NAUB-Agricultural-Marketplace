@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { LGA_OPTIONS, isSupabase } from "@/lib/config";
+import { LGA_OPTIONS } from "@/lib/config";
+import {
+  getImageUploadBackend,
+  imageBackendLabel,
+  prepareListingImage,
+} from "@/lib/media/prepare-listing-image";
 import { categoryRepository } from "@/lib/repositories";
-import { prepareListingImage } from "@/lib/supabase/storage";
 import type { Category, Product, UserId } from "@/lib/types";
-import { FormEvent, useEffect, useState } from "react";
+import { ImagePlus, Loader2 } from "lucide-react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 
 export type ListingFormValues = {
   name: string;
@@ -73,6 +78,11 @@ export function ListingForm({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const uploadBackend = useMemo(() => getImageUploadBackend(), []);
+  const backendHint = useMemo(
+    () => imageBackendLabel(uploadBackend),
+    [uploadBackend]
+  );
 
   useEffect(() => {
     categoryRepository.findAll().then(setCategories);
@@ -81,7 +91,7 @@ export function ListingForm({
   async function handleFile(file: File | null) {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setError("Please choose an image file");
+      setError("Please choose an image file (JPEG, PNG, or WebP)");
       return;
     }
     setUploading(true);
@@ -202,28 +212,46 @@ export function ListingForm({
       ) : null}
 
       <div className="flex flex-col gap-2">
-        <span className="text-body-sm font-medium">Photo</span>
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          disabled={uploading}
-          className="block w-full text-body-sm file:mr-3 file:min-h-11 file:rounded-full file:border-0 file:bg-pale-stone file:px-4 file:py-2 file:text-body-sm file:font-medium"
-          onChange={(e) => void handleFile(e.target.files?.[0] ?? null)}
-        />
-        <p className="text-body-sm text-forest-canopy/60">
-          {isSupabase
-            ? "Uploads to secure cloud storage (Supabase)."
-            : "Stored locally for this prototype — switch DATA_SOURCE=supabase for cloud storage."}
-        </p>
-        {uploading ? (
-          <p className="text-body-sm">Uploading image…</p>
-        ) : null}
+        <span className="text-body-sm font-medium">Product photo</span>
+        <label className="flex min-h-[120px] cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-forest-canopy/25 bg-pale-stone/50 px-4 py-6 text-center transition-colors hover:bg-pale-stone">
+          {uploading ? (
+            <Loader2
+              className="h-8 w-8 animate-spin text-forest-canopy/70"
+              aria-hidden
+            />
+          ) : (
+            <ImagePlus
+              className="h-8 w-8 text-forest-canopy/60"
+              aria-hidden
+            />
+          )}
+          <span className="text-body-sm font-medium text-forest-canopy">
+            {uploading
+              ? uploadBackend === "cloudinary"
+                ? "Uploading to Cloudinary…"
+                : "Uploading photo…"
+              : imagePath
+                ? "Change photo"
+                : "Tap to add photo"}
+          </span>
+          <span className="text-[12px] text-forest-canopy/55">
+            Camera or gallery · compressed for mobile data
+          </span>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/*"
+            capture="environment"
+            disabled={uploading}
+            className="sr-only"
+            onChange={(e) => void handleFile(e.target.files?.[0] ?? null)}
+          />
+        </label>
+        <p className="text-body-sm text-forest-canopy/60">{backendHint}</p>
         {imagePath ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imagePath}
-            alt="Preview"
+            alt="Listing preview"
             className="mt-1 max-h-48 w-full rounded-2xl object-cover"
           />
         ) : null}

@@ -1,12 +1,9 @@
 /**
- * B4 — Product image uploads to Supabase Storage.
+ * B4 — Product image uploads to Supabase Storage (fallback when Cloudinary off).
+ * Prefer Cloudinary via lib/media/prepare-listing-image.ts for listing photos.
  * Bucket: product-images/{farmer_id}/{filename}
- * Client-side resize is optional; we cap file size and prefer JPEG.
  */
-import {
-  PRODUCT_IMAGES_BUCKET,
-  isSupabase,
-} from "@/lib/config";
+import { PRODUCT_IMAGES_BUCKET, isSupabase } from "@/lib/config";
 import type { UserId } from "@/lib/types";
 import { getSupabaseBrowserClient } from "./client";
 
@@ -57,21 +54,4 @@ export function fileToDataUrl(file: File): Promise<string> {
   });
 }
 
-/**
- * Unified image prepare for listing forms.
- * - local: base64 data URL
- * - supabase: upload + public URL
- */
-export async function prepareListingImage(
-  farmerId: UserId,
-  file: File
-): Promise<string> {
-  if (isSupabase) {
-    const { publicUrl } = await uploadProductImage(farmerId, file);
-    return publicUrl;
-  }
-  if (file.size > 1.5 * 1024 * 1024) {
-    throw new Error("Image must be under 1.5 MB for local prototype");
-  }
-  return fileToDataUrl(file);
-}
+

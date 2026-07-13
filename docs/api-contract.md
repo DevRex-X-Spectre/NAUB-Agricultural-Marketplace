@@ -110,3 +110,7 @@ type ServiceResult<T> = {
 - [x] Every page data need maps to a repository/service method above  
 - [x] Interfaces frozen under `lib/repositories/types.ts` and service classes  
 - [x] Part B implements same method names; UI unchanged  
+
+
+
+
