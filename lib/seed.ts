@@ -24,7 +24,7 @@ import { clearAllTables } from "@/lib/repositories/reset";
 import type { Category, Product, TransportProvider, User } from "@/lib/types";
 import { hashPassword } from "@/lib/utils/password";
 
-const SEED_VERSION = "v4-demo-products";
+const SEED_VERSION = "v5-email-login";
 const VERSIONED_SEED_FLAG = `${SEED_FLAG_KEY}:${SEED_VERSION}`;
 
 /** Shared demo password — document in README / login hint if needed */
@@ -168,7 +168,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
       id: 2,
       full_name: "Musa Ibrahim",
       phone: "08031112222",
-      email: null,
+      email: "musa.ibrahim@demo.naub-agri.local",
       lga: "Biu",
       role: "farmer",
       verification_status: "verified",
@@ -181,7 +181,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
       id: 3,
       full_name: "Aisha Bello",
       phone: "08033334444",
-      email: null,
+      email: "aisha.bello@demo.naub-agri.local",
       lga: "Hawul",
       role: "farmer",
       verification_status: "verified",
@@ -194,7 +194,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
       id: 4,
       full_name: "Fatima Sani",
       phone: "08037778888",
-      email: null,
+      email: "fatima.sani@demo.naub-agri.local",
       lga: "Maiduguri",
       role: "buyer",
       verification_status: "verified",
@@ -222,7 +222,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
     {
       farmer_id: 2,
       category_id: bySlug("maize"),
-      name: "White Maize — 50kg bags",
+      name: "White Maize, 50kg bags",
       description:
         "Dry white maize from Biu farms. Clean, ready for mill. Minimum 5 bags.",
       price: 28000,
@@ -299,7 +299,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
     {
       farmer_id: 3,
       category_id: bySlug("vegetables"),
-      name: "Fresh Tomatoes — crates",
+      name: "Fresh Tomatoes, crates",
       description:
         "Ripe tomatoes from Hawul gardens. Best collected same day.",
       price: 12000,
@@ -376,7 +376,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
     {
       farmer_id: 2,
       category_id: bySlug("maize"),
-      name: "Yellow Maize — bulk bags",
+      name: "Yellow Maize, bulk bags",
       description: "Yellow maize suitable for feed mills. Discount on 20+ bags.",
       price: 26500,
       unit: "bag",
@@ -391,7 +391,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
     {
       farmer_id: 3,
       category_id: bySlug("vegetables"),
-      name: "Leafy greens — mixed bundles",
+      name: "Leafy greens, mixed bundles",
       description: "Fresh garden greens. Morning harvest only.",
       price: 1500,
       unit: "bundle",
@@ -420,7 +420,7 @@ export async function runSeed(force = false): Promise<SeedResult> {
 
   return {
     seeded: true,
-    message: `Demo marketplace loaded — ${products.length} listings (password: ${DEMO_PASSWORD})`,
+    message: `Demo marketplace loaded: ${products.length} listings (password: ${DEMO_PASSWORD})`,
     counts: {
       categories: categories.length,
       users: usersSpec.length,

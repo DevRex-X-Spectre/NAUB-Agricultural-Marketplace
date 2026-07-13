@@ -32,7 +32,7 @@ export default function TransportPage() {
               <Card className="!p-5">
                 <h2 className="text-subheading font-light">{t.name}</h2>
                 <p className="mt-1 text-body-sm text-forest-canopy/70">
-                  Coverage: {t.coverage_lga ?? "—"}
+                  Coverage: {t.coverage_lga ?? "N/A"}
                 </p>
                 {t.notes ? (
                   <p className="mt-2 text-body-sm">{t.notes}</p>

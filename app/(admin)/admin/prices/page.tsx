@@ -40,7 +40,7 @@ export default function AdminPricesPage() {
             Price trends
           </h1>
           <p className="text-body-sm text-forest-canopy/70">
-            FR-10 — top traded categories by listing volume
+            FR-10: top traded categories by listing volume
           </p>
         </div>
         <Button variant="secondary" onClick={() => void snapshot()}>

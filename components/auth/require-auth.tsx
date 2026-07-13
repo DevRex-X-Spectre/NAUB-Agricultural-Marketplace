@@ -1,5 +1,6 @@
 "use client";
 
+import { SessionSplash } from "@/components/auth/session-splash";
 import { useAuth } from "@/components/providers/auth-provider";
 import type { UserRole } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -17,8 +18,9 @@ type Props = {
 };
 
 /**
- * Client-side route guard for localStorage sessions.
- * Redirects unauthenticated users to /login; wrong role to their home.
+ * Client-side route guard.
+ * If user is already known, render immediately (no blank session screen).
+ * Only shows a brief splash while auth is still hydrating.
  */
 export function RequireAuth({ roles, children }: Props) {
   const { user, loading } = useAuth();
@@ -39,16 +41,18 @@ export function RequireAuth({ roles, children }: Props) {
     }
   }, [user, loading, roles, router]);
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center px-4 text-body text-forest-canopy/70">
-        Checking session…
-      </div>
-    );
+  // Already authenticated: never block on a full-page "checking" message
+  if (user) {
+    if (roles && !roles.includes(user.role)) {
+      return <SessionSplash label="Redirecting" />;
+    }
+    return <>{children}</>;
   }
 
-  if (!user) return null;
-  if (roles && !roles.includes(user.role)) return null;
+  if (loading) {
+    return <SessionSplash label="Loading your account" />;
+  }
 
-  return <>{children}</>;
+  // Redirecting to login
+  return <SessionSplash label="Redirecting to sign in" />;
 }

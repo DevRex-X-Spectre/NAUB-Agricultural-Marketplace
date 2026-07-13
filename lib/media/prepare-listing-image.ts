@@ -54,6 +54,6 @@ export function imageBackendLabel(backend: ImageUploadBackend): string {
     case "supabase":
       return "Photos upload to Supabase Storage.";
     default:
-      return "Cloudinary not configured — photo stored only in this browser (demo). Set NEXT_PUBLIC_CLOUDINARY_* for real uploads.";
+      return "Cloudinary not configured. Photo stored only in this browser (demo). Set NEXT_PUBLIC_CLOUDINARY_* for real uploads.";
   }
 }

@@ -39,10 +39,22 @@ describe("ValidationService", () => {
     const res = v.validateRegistration({
       full_name: "Musa Ibrahim",
       phone: "08031112222",
+      email: "musa@example.com",
       password: "password123",
       lga: "Biu",
     });
     expect(res.success).toBe(true);
+  });
+
+  it("requires email on registration", () => {
+    const res = v.validateRegistration({
+      full_name: "Musa Ibrahim",
+      phone: "08031112222",
+      email: "",
+      password: "password123",
+      lga: "Biu",
+    });
+    expect(res.success).toBe(false);
   });
 
   it("validates product fields", () => {

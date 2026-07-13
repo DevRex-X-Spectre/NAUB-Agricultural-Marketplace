@@ -106,20 +106,6 @@ export default function HomePage() {
                 )}
               </div>
 
-              <ul className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-body-sm text-forest-canopy/70">
-                <li className="inline-flex items-center gap-1.5">
-                  <Phone className="h-4 w-4 shrink-0" aria-hidden />
-                  Phone-first signup
-                </li>
-                <li className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
-                  Admin moderation
-                </li>
-                <li className="inline-flex items-center gap-1.5">
-                  <Leaf className="h-4 w-4 shrink-0" aria-hidden />
-                  Freshness filters
-                </li>
-              </ul>
             </div>
 
             {/* Visual panel */}
@@ -149,7 +135,7 @@ export default function HomePage() {
                 </span>
                 <p className="text-body-sm font-medium">Buyers & farmers</p>
                 <p className="text-body-sm text-forest-canopy/65">
-                  Contact via WhatsApp or call — no checkout maze
+                  Contact via WhatsApp or call
                 </p>
               </Card>
               <Card surface="parchment" className="flex flex-col gap-3 !p-5">
@@ -172,7 +158,7 @@ export default function HomePage() {
               icon: Sprout,
               code: "Farmers",
               title: "List in minutes",
-              body: "Photo, price, quantity, and LGA — reach buyers without middlemen.",
+              body: "Photo, price, quantity, and LGA. Reach buyers without middlemen.",
             },
             {
               icon: MapPin,
@@ -237,7 +223,7 @@ export default function HomePage() {
                 Ready when you are
               </h2>
               <p className="mt-3 text-body text-warm-parchment/85">
-                Registration takes under three minutes — phone number, LGA, and
+                Registration takes under three minutes: phone number, LGA, and
                 a password. No email required.
               </p>
             </div>

@@ -17,6 +17,7 @@ describe("critical flow contracts", () => {
     const reg = validationService.validateRegistration({
       full_name: "Test Farmer",
       phone: "08035550000",
+      email: "farmer@example.com",
       password: "secret12",
       lga: "Biu",
     });

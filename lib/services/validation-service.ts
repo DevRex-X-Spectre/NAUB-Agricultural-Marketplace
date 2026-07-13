@@ -89,6 +89,12 @@ export class ValidationService {
       errors.push("Phone must be a valid Nigerian mobile number");
     }
 
+    const emailErr = this.required(input.email, "Email");
+    if (emailErr) errors.push(emailErr);
+    else if (!this.isEmail(String(input.email))) {
+      errors.push("Email format is invalid");
+    }
+
     const passErr = this.required(input.password, "Password");
     if (passErr) errors.push(passErr);
     else {
@@ -99,12 +105,16 @@ export class ValidationService {
     const lgaErr = this.required(input.lga, "LGA");
     if (lgaErr) errors.push(lgaErr);
 
-    if (input.email && input.email.trim() && !this.isEmail(input.email)) {
-      errors.push("Email format is invalid");
-    }
-
     if (errors.length) return { success: false, error: errors.join("; ") };
     return { success: true, data: true };
+  }
+
+  /** Login identifier: email or Nigerian phone */
+  isLoginIdentifier(value: string): boolean {
+    const v = value.trim();
+    if (!v) return false;
+    if (v.includes("@")) return this.isEmail(v);
+    return this.isPhone(v);
   }
 
   validateProduct(input: {

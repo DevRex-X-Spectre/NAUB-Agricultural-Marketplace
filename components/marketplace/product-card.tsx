@@ -14,6 +14,20 @@ type Props = {
   showStatus?: boolean;
 };
 
+/**
+ * Tint a placeholder background so each category gets its own colour band
+ * when no photo is available. Stable across renders.
+ */
+function placeholderBg(seed: number): string {
+  const palette = [
+    "bg-lime-sprout/40",
+    "bg-forest-canopy/15",
+    "bg-pale-stone",
+    "bg-warm-parchment",
+  ];
+  return palette[Math.abs(seed) % palette.length];
+}
+
 export function ProductCard({
   product,
   farmerName,
@@ -29,7 +43,7 @@ export function ProductCard({
       href={link}
       className="group flex flex-col overflow-hidden rounded-2xl border border-forest-canopy/15 bg-warm-parchment transition-opacity hover:opacity-95"
     >
-      <div className="relative aspect-[4/3] w-full bg-pale-stone">
+      <div className={`relative aspect-[4/3] w-full ${placeholderBg(product.id)}`}>
         {product.image_path ? (
           <Image
             src={product.image_path}
@@ -41,8 +55,13 @@ export function ProductCard({
             unoptimized={product.image_path.startsWith("data:")}
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-forest-canopy/40 text-body-sm">
-            No photo
+          <div className="flex h-full flex-col items-center justify-center gap-1 px-4 text-center">
+            <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-forest-canopy/55">
+              No photo
+            </span>
+            <span className="line-clamp-2 text-body-sm font-medium text-forest-canopy/80">
+              {product.name}
+            </span>
           </div>
         )}
         <div className="absolute left-2 top-2 flex flex-wrap gap-1">

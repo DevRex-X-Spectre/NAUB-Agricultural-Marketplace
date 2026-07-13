@@ -143,7 +143,8 @@ export interface Session {
 export type CreateUserInput = {
   full_name: string;
   phone: string;
-  email?: string | null;
+  /** Required on signup — used for login with email or phone */
+  email: string;
   lga: string;
   role: Exclude<UserRole, "admin">;
   password: string;

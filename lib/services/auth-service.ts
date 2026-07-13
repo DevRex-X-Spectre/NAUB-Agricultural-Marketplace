@@ -115,26 +115,34 @@ export class AuthService {
   private async registerLocal(
     input: CreateUserInput
   ): Promise<ServiceResult<PublicUser>> {
-    const existing = await userRepository.findByPhone(input.phone);
-    if (existing) {
+    const phone = normalizePhone(input.phone) || input.phone.replace(/[\s-]/g, "");
+    const email = (input.email ?? "").trim().toLowerCase();
+
+    const existingPhone = await userRepository.findByPhone(phone);
+    if (existingPhone) {
       return {
         success: false,
         error: "An account with this phone number already exists",
       };
     }
+    const existingEmail = await userRepository.findByEmail(email);
+    if (existingEmail) {
+      return {
+        success: false,
+        error: "An account with this email already exists",
+      };
+    }
 
     // SWAP FOR SERVER-SIDE bcrypt ON BACKEND MIGRATION — local prototype only
     const { hash, salt } = await hashPassword(input.password);
-    const phone = normalizePhone(input.phone) || input.phone.replace(/[\s-]/g, "");
     const role = resolveRole(phone, input.role);
     const now = nowIso();
     const user = await userRepository.create({
       full_name: validationService.sanitizeText(input.full_name),
       phone,
-      email: input.email?.trim() || null,
+      email,
       lga: validationService.sanitizeText(input.lga),
       role,
-      // Farmers/admins verified on signup so they can act immediately.
       verification_status: "verified",
       password_hash: hash,
       password_salt: salt,
@@ -151,20 +159,30 @@ export class AuthService {
     input: CreateUserInput
   ): Promise<ServiceResult<PublicUser>> {
     const phone = normalizePhone(input.phone) || input.phone.replace(/[\s-]/g, "");
+    const email = (input.email ?? "").trim().toLowerCase();
     const role = resolveRole(phone, input.role);
-    const existing = await userRepository.findByPhone(phone);
-    if (existing) {
+
+    const existingPhone = await userRepository.findByPhone(phone);
+    if (existingPhone) {
       return {
         success: false,
         error: "An account with this phone number already exists",
       };
     }
+    const existingEmail = await userRepository.findByEmail(email);
+    if (existingEmail) {
+      return {
+        success: false,
+        error: "An account with this email already exists",
+      };
+    }
 
     const supabase = getSupabaseBrowserClient();
-    const email = input.email?.trim() || phoneToAuthEmail(phone);
+    // Real email for Auth so users can sign in with email
+    const authEmail = email || phoneToAuthEmail(phone);
 
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: authEmail,
       password: input.password,
       options: {
         data: {
@@ -180,19 +198,17 @@ export class AuthService {
       return { success: false, error: error.message };
     }
     if (!data.user) {
-      return { success: false, error: "Registration failed — no user returned" };
+      return { success: false, error: "Registration failed. No user returned." };
     }
 
-    // Wait briefly for trigger; then fetch / patch profile
     let profile = await userRepository.findById(data.user.id);
     if (!profile) {
-      // Trigger may lag — create profile row explicitly
       try {
         profile = await userRepository.create({
           id: data.user.id,
           full_name: validationService.sanitizeText(input.full_name),
           phone,
-          email: input.email?.trim() || null,
+          email: email || null,
           lga: validationService.sanitizeText(input.lga),
           role,
           verification_status: "verified",
@@ -204,15 +220,14 @@ export class AuthService {
           last_login: null,
         });
       } catch {
-        // Profile may already exist from trigger race
         profile = await userRepository.findById(data.user.id);
       }
     } else {
-      // Ensure phone/role/verification match signup intent (incl. env admin)
       profile =
         (await userRepository.update(data.user.id, {
           full_name: validationService.sanitizeText(input.full_name),
           phone,
+          email: email || null,
           lga: validationService.sanitizeText(input.lga),
           role,
           verification_status: "verified",
@@ -222,7 +237,7 @@ export class AuthService {
     if (!profile) {
       return {
         success: false,
-        error: "Account created but profile is missing — try signing in",
+        error: "Account created but profile is missing. Try signing in.",
       };
     }
 
@@ -230,27 +245,40 @@ export class AuthService {
     return { success: true, data: toPublicUser(profile) };
   }
 
+  /**
+   * Sign in with email OR phone + password.
+   * `identifier` may be either form.
+   */
   async login(
-    phone: string,
+    identifier: string,
     password: string
   ): Promise<ServiceResult<{ user: PublicUser; session: Session }>> {
-    if (!phone?.trim() || !password) {
-      return { success: false, error: "Phone and password are required" };
+    if (!identifier?.trim() || !password) {
+      return {
+        success: false,
+        error: "Email or phone and password are required",
+      };
+    }
+    if (!validationService.isLoginIdentifier(identifier)) {
+      return {
+        success: false,
+        error: "Enter a valid email address or Nigerian phone number",
+      };
     }
 
     if (isSupabase) {
-      return this.loginSupabase(phone, password);
+      return this.loginSupabase(identifier, password);
     }
-    return this.loginLocal(phone, password);
+    return this.loginLocal(identifier, password);
   }
 
   private async loginLocal(
-    phone: string,
+    identifier: string,
     password: string
   ): Promise<ServiceResult<{ user: PublicUser; session: Session }>> {
-    let user = await userRepository.findByPhone(phone);
+    let user = await userRepository.findByPhoneOrEmail(identifier);
     if (!user) {
-      return { success: false, error: "Invalid phone or password" };
+      return { success: false, error: "Invalid email/phone or password" };
     }
 
     const ok = await verifyPassword(
@@ -259,7 +287,7 @@ export class AuthService {
       user.password_hash
     );
     if (!ok) {
-      return { success: false, error: "Invalid phone or password" };
+      return { success: false, error: "Invalid email/phone or password" };
     }
 
     user = await ensureEnvAdminRole(user);
@@ -291,12 +319,12 @@ export class AuthService {
   }
 
   private async loginSupabase(
-    phone: string,
+    identifier: string,
     password: string
   ): Promise<ServiceResult<{ user: PublicUser; session: Session }>> {
-    let profile = await userRepository.findByPhone(phone);
+    let profile = await userRepository.findByPhoneOrEmail(identifier);
     if (!profile) {
-      return { success: false, error: "Invalid phone or password" };
+      return { success: false, error: "Invalid email/phone or password" };
     }
 
     profile = await ensureEnvAdminRole(profile);
@@ -304,17 +332,19 @@ export class AuthService {
     const gate = gateVerification(profile.verification_status);
     if (gate) return { success: false, error: gate };
 
-    const email = profile.email?.trim() || phoneToAuthEmail(profile.phone);
+    // Supabase Auth always uses email; resolve from profile
+    const authEmail =
+      profile.email?.trim() || phoneToAuthEmail(profile.phone);
     const supabase = getSupabaseBrowserClient();
     const { data, error } = await supabase.auth.signInWithPassword({
-      email,
+      email: authEmail,
       password,
     });
 
     if (error || !data.session) {
       return {
         success: false,
-        error: error?.message ?? "Invalid phone or password",
+        error: error?.message ?? "Invalid email/phone or password",
       };
     }
 

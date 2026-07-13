@@ -59,7 +59,7 @@ export default function BuyerHomePage() {
           <Card className="!p-5">
             <h2 className="text-subheading font-light">Seller shortlist</h2>
             <p className="mt-1 text-body-sm text-forest-canopy/70">
-              Not a checkout cart — a list of sellers to contact
+              Not a checkout cart. A list of sellers to contact
             </p>
           </Card>
         </Link>

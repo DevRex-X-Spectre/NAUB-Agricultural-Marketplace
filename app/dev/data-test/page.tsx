@@ -53,7 +53,7 @@ export default function DataTestPage() {
         label: "Current session",
         detail: session.data
           ? `${session.data.full_name} (${session.data.role})`
-          : "Not signed in — register at /register",
+          : "Not signed in. Register at /register",
       });
 
       const phoneOk = validationService.isPhone("08031112222");
@@ -146,7 +146,7 @@ export default function DataTestPage() {
           </h2>
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-body-sm">
             <li>Run health check or wipe to reload demo listings</li>
-            <li>Browse /browse — sample maize, livestock, vegetables, etc.</li>
+            <li>Browse /browse for sample maize, livestock, vegetables, etc.</li>
             <li>Sign in: farmer 08031112222 or buyer 08037778888</li>
             <li>Password for demo accounts: password123</li>
           </ol>

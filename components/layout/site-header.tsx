@@ -1,8 +1,8 @@
 "use client";
 
+import { BrandLogo } from "@/components/icons/brand-logo";
 import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
-import { Leaf } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,13 +21,11 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-forest-canopy/10 bg-warm-parchment/95 backdrop-blur-sm">
       <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
-        <Link href="/" className="flex min-h-11 items-center gap-2 shrink-0">
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-lime-sprout">
-            <Leaf className="h-4 w-4 text-forest-canopy" aria-hidden />
-          </span>
-          <span className="text-body font-medium tracking-[-0.4px]">
-            NAUB Agri
-          </span>
+        <Link
+          href="/"
+          className="flex min-h-11 items-center gap-2 shrink-0 rounded-full"
+        >
+          <BrandLogo size={32} withWordmark withEyebrow />
         </Link>
 
         <nav className="flex items-center gap-1 sm:gap-2">

@@ -26,7 +26,8 @@ import {
   isInCart,
   removeFromCart,
 } from "@/lib/utils/cart";
-import { daysUntil, formatNaira } from "@/lib/utils/format";
+import { daysUntil, formatNaira, formatPhoneDisplay } from "@/lib/utils/format";
+import { MessageCircle, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -127,7 +128,7 @@ export default function ProductDetailPage() {
       setReviewMsg(res.error ?? "Could not submit review");
       return;
     }
-    setReviewMsg("Thanks — your review was saved.");
+    setReviewMsg("Thanks, your review was saved.");
     const rev = await reviewService.listForProduct(id);
     setReviews(rev.data ?? []);
     const f = await userRepository.findById(farmer.id);
@@ -216,7 +217,16 @@ export default function ProductDetailPage() {
             <Card surface="pale" className="!p-4">
               <p className="text-body-sm text-forest-canopy/70">Seller</p>
               <p className="font-medium">{farmer.full_name}</p>
-              <div className="mt-1 flex flex-wrap items-center gap-2">
+              <p className="mt-1 text-body-sm text-forest-canopy">
+                WhatsApp:{" "}
+                <span className="font-medium">
+                  {formatPhoneDisplay(farmer.phone)}
+                </span>
+              </p>
+              <p className="mt-0.5 text-[12px] text-forest-canopy/55">
+                This is the phone number the seller registered with
+              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
                 <VerificationBadge status={farmer.verification_status} />
                 {farmer.review_count > 0 ? (
                   <StarRating
@@ -233,21 +243,26 @@ export default function ProductDetailPage() {
           ) : null}
 
           {error ? (
-            <p role="alert" className="text-body-sm">
+            <p role="alert" className="rounded-xl bg-red-50 px-3 py-3 text-body-sm text-red-700">
               {error}
             </p>
           ) : null}
 
           {product.status === "active" ? (
             <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              <Button className="w-full sm:w-auto" onClick={() => void contact("whatsapp")}>
+              <Button
+                className="w-full gap-2 sm:w-auto"
+                onClick={() => void contact("whatsapp")}
+              >
+                <MessageCircle className="h-4 w-4" aria-hidden />
                 WhatsApp seller
               </Button>
               <Button
                 variant="secondary"
-                className="w-full sm:w-auto"
+                className="w-full gap-2 sm:w-auto"
                 onClick={() => void contact("call")}
               >
+                <Phone className="h-4 w-4" aria-hidden />
                 Call seller
               </Button>
               <Button
@@ -263,8 +278,9 @@ export default function ProductDetailPage() {
           )}
 
           <p className="text-body-sm text-forest-canopy/60">
-            Contact always logs a request first (FR-05), then opens WhatsApp or
-            the dialer.
+            Opens WhatsApp or the dialer on the seller&apos;s registered number.
+            Your WhatsApp number is shared in the first message so they can
+            reply.
           </p>
         </div>
       </div>

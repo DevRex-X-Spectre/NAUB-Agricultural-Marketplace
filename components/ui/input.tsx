@@ -27,17 +27,21 @@ export function Input({
         id={inputId}
         className={[
           "w-full min-h-11 rounded-lg bg-warm-parchment",
-          "border border-forest-canopy/30 px-4 py-3",
+          "px-4 py-3 border",
           "text-body tracking-[-0.4px] text-forest-canopy",
           "placeholder:text-soft-sage",
           "disabled:bg-pale-stone disabled:text-quiet-gray",
-          error ? "border-forest-canopy" : "",
+          error
+            ? "border-red-500 focus-visible:outline-red-500"
+            : "border-forest-canopy/30",
           className,
         ].join(" ")}
         {...props}
       />
       {error ? (
-        <span className="text-body-sm text-forest-canopy/80">{error}</span>
+        <span className="text-body-sm text-red-600" role="alert">
+          {error}
+        </span>
       ) : null}
       {hint && !error ? (
         <span className="text-body-sm text-forest-canopy/60">{hint}</span>

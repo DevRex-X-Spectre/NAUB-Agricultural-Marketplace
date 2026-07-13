@@ -15,11 +15,11 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "NAUB Agricultural Marketplace",
-    template: "%s · NAUB Agri",
+    default: "NAUB Agric Connect",
+    template: "%s · NAUB Agric Connect",
   },
   description:
-    "Online marketplace for agricultural products — connect farmers and buyers across Biu and surrounding LGAs.",
+    "NAUB Agric Connect — an online marketplace for agricultural products. Connect farmers and buyers across Biu and surrounding LGAs.",
 };
 
 export default function RootLayout({
@@ -29,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

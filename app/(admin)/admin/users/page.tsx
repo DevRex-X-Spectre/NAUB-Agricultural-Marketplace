@@ -45,7 +45,7 @@ export default function AdminUsersPage() {
           User management
         </h1>
         <p className="text-body-sm text-forest-canopy/70">
-          FR-08 — verification status controls marketplace access
+          FR-08: verification status controls marketplace access
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function AdminUsersPage() {
         </p>
       ) : null}
 
-      {/* Mobile card list — not a squeezed table */}
+      {/* Mobile card list, not a squeezed table */}
       <ul className="flex flex-col gap-3">
         {users.map((u) => (
           <li key={u.id}>

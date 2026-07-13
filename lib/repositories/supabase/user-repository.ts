@@ -102,6 +102,27 @@ export class SupabaseUserRepository implements Repository<User> {
     return data ? mapProfile(data) : null;
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    const normalized = email.trim().toLowerCase();
+    if (!normalized) return null;
+    const { data, error } = await this.client()
+      .from("profiles")
+      .select("*")
+      .ilike("email", normalized)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return data ? mapProfile(data) : null;
+  }
+
+  async findByPhoneOrEmail(identifier: string): Promise<User | null> {
+    const raw = identifier.trim();
+    if (!raw) return null;
+    if (raw.includes("@")) {
+      return this.findByEmail(raw);
+    }
+    return this.findByPhone(raw);
+  }
+
   async findByRole(role: UserRole): Promise<User[]> {
     const { data, error } = await this.client()
       .from("profiles")
