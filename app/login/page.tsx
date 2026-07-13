@@ -7,6 +7,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { Toast } from "@/components/ui/toast";
 import { authService } from "@/lib/services";
 import type { UserRole } from "@/lib/types";
 import Link from "next/link";
@@ -32,6 +33,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState<string | null>(null);
 
   // Already signed in: go straight to dashboard (no form flash)
   useEffect(() => {
@@ -51,10 +53,16 @@ function LoginForm() {
         setSubmitting(false);
         return;
       }
-      // Set session first, then hard-navigate so RequireAuth never shows a wait state
-      setUser(res.data.user);
+      // Show a success toast before we commit the session + hard-navigate,
+      // so the user gets visible confirmation instead of an instant page swap.
+      const firstName = (res.data.user.full_name || "").split(" ")[0] || "there";
+      setSuccess(`Welcome back, ${firstName}!`);
+      // Keep the button in its loading state during the beat.
       const next = params.get("next") || roleHome(res.data.user.role);
-      window.location.assign(next);
+      window.setTimeout(() => {
+        setUser(res.data!.user);
+        window.location.assign(next);
+      }, 1200);
     } catch {
       setError("Something went wrong. Please try again.");
       setSubmitting(false);
@@ -117,10 +125,14 @@ function LoginForm() {
             Create an account
           </Link>
         </p>
-        <p className="text-center text-[12px] text-forest-canopy/45">
-          Demo · phone 08031112222 · password password123
-        </p>
       </div>
+
+      <Toast
+        open={!!success}
+        variant="success"
+        title={success ?? ""}
+        description="Taking you to your dashboard…"
+      />
     </AuthShell>
   );
 }

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Select } from "@/components/ui/select";
+import { Toast } from "@/components/ui/toast";
 import { LGA_OPTIONS } from "@/lib/config";
 import { authService } from "@/lib/services";
 import type { UserRole } from "@/lib/types";
@@ -39,6 +40,10 @@ function RegisterForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState<{
+    title: string;
+    description?: string;
+  } | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
@@ -69,18 +74,39 @@ function RegisterForm() {
         setSubmitting(false);
         return;
       }
-      const login = await authService.login(phone, password);
-      if (login.success && login.data) {
-        setUser(login.data.user);
+      // Registration succeeded. Now check whether Supabase established a
+      // live session (email confirmation OFF → auto-confirmed) or whether
+      // the user still needs to confirm their email (confirmation ON).
+      // We deliberately do NOT call login() again — that would re-run the
+      // password check and surface a misleading "wrong password"-style
+      // error when the real situation is "email not confirmed yet".
+      const session = await authService.getCurrentUser();
+      if (session.success && session.data) {
+        const firstName =
+          (session.data.full_name || "").split(" ")[0] || "there";
         const home: Record<UserRole, string> = {
           farmer: "/farmer",
           buyer: "/browse",
           admin: "/admin",
         };
-        window.location.assign(home[login.data.user.role]);
+        setSuccess({
+          title: `Welcome aboard, ${firstName}!`,
+          description: "Your account is ready. Taking you to your dashboard…",
+        });
+        const target = home[session.data.role];
+        window.setTimeout(() => {
+          setUser(session.data!);
+          window.location.assign(target);
+        }, 1500);
         return;
       }
-      setError(login.error ?? "Account created. Please sign in.");
+      // No live session → email confirmation is enabled on the Supabase
+      // project. Show an honest "check your email" state — NOT an error.
+      setSuccess({
+        title: "Check your email to finish",
+        description:
+          "We sent a confirmation link. Click it, then sign in. (If you run this project, turn OFF email confirmation in Supabase → Authentication → Providers → Email.)",
+      });
       setSubmitting(false);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -203,6 +229,13 @@ function RegisterForm() {
           Sign in
         </Link>
       </p>
+
+      <Toast
+        open={!!success}
+        variant="success"
+        title={success?.title ?? ""}
+        description={success?.description}
+      />
     </AuthShell>
   );
 }
