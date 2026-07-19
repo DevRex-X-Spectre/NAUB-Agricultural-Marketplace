@@ -227,9 +227,9 @@ export function ListingForm({
           )}
           <span className="text-body-sm font-medium text-forest-canopy">
             {uploading
-              ? uploadBackend === "cloudinary"
-                ? "Uploading to Cloudinary…"
-                : "Uploading photo…"
+              ? uploadBackend === "supabase"
+                ? "Uploading to Supabase…"
+                : "Preparing photo…"
               : imagePath
                 ? "Change photo"
                 : "Tap to add photo"}

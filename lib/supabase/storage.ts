@@ -1,6 +1,5 @@
 /**
- * B4 — Product image uploads to Supabase Storage (fallback when Cloudinary off).
- * Prefer Cloudinary via lib/media/prepare-listing-image.ts for listing photos.
+ * B4 — Product image uploads to Supabase Storage.
  * Bucket: product-images/{farmer_id}/{filename}
  */
 import { PRODUCT_IMAGES_BUCKET, isSupabase } from "@/lib/config";
@@ -53,5 +52,4 @@ export function fileToDataUrl(file: File): Promise<string> {
     reader.readAsDataURL(file);
   });
 }
-
 

@@ -57,16 +57,11 @@ See **[docs/deployment.md](docs/deployment.md)** for full steps.
 
 Never put the Supabase **service_role** key in `NEXT_PUBLIC_*` or the browser.
 
-### Cloudinary (listing photos)
+### Listing photos
 
-Required for real photo uploads when creating a listing:
-
-```env
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
-NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=naub_listings
-```
-
-Setup steps: **[docs/cloudinary-setup.md](docs/cloudinary-setup.md)**.
+Listing photos upload to the Supabase Storage `product-images` bucket when
+`NEXT_PUBLIC_DATA_SOURCE=supabase`. The Supabase migration creates the bucket
+and its access policies.
 
 ## Routes
 

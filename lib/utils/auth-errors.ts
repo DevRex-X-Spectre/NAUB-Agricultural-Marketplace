@@ -44,7 +44,9 @@ const MAP: Array<{ test: RegExp; advice: AuthErrorAdvice }> = [
     },
   },
   {
-    test: /weak.?password|password/i,
+    // Match actual password-policy failures only. Generic login errors often
+    // contain the word "password" and must not be presented as signup advice.
+    test: /weak.?password|password.{0,30}(too weak|at least|minimum|characters|strength)|(?:at least|minimum).{0,30}password/i,
     advice: {
       message: "That password is too weak. Use at least 6 characters with a mix of letters and numbers.",
       retryable: true,
@@ -59,7 +61,7 @@ const MAP: Array<{ test: RegExp; advice: AuthErrorAdvice }> = [
     },
   },
   {
-    test: /invalid.?credentials|invalid login|wrong password|no such user/i,
+    test: /invalid.?credentials|invalid login|invalid.{0,40}password|incorrect.{0,40}password|wrong password|no such user/i,
     advice: {
       message: "Email/phone or password is incorrect. Please check and try again.",
       retryable: true,

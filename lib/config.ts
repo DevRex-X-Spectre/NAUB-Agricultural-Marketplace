@@ -32,17 +32,8 @@ export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 export const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
-/** Product images bucket (B4 — Supabase fallback when Cloudinary is off) */
+/** Supabase Storage bucket for listing product images. */
 export const PRODUCT_IMAGES_BUCKET = "product-images";
-
-/**
- * Cloudinary (primary listing photo backend).
- * Create an unsigned upload preset in Cloudinary Dashboard → Settings → Upload.
- */
-export const CLOUDINARY_CLOUD_NAME =
-  process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
-export const CLOUDINARY_UPLOAD_PRESET =
-  process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? "";
 
 
 /**

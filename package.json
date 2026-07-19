@@ -10,8 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "fetch-demo-images": "node scripts/fetch-demo-images.mjs",
-    "seed:supabase": "node scripts/seed-supabase.mjs",
-    "config:cloudinary": "node scripts/cloudinary-check.mjs"
+    "seed:supabase": "node scripts/seed-supabase.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
