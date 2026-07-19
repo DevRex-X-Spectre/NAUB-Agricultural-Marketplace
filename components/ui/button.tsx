@@ -1,11 +1,12 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "inverse";
+type Variant = "primary" | "secondary" | "ghost" | "inverse" | "danger";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: Variant;
   children: ReactNode;
   className?: string;
+  ref?: Ref<HTMLButtonElement>;
 };
 
 const variants: Record<Variant, string> = {
@@ -17,6 +18,8 @@ const variants: Record<Variant, string> = {
     "bg-transparent text-forest-canopy underline-offset-4 hover:underline disabled:text-quiet-gray",
   inverse:
     "bg-warm-parchment text-forest-canopy hover:bg-lime-sprout disabled:bg-soft-sage",
+  danger:
+    "bg-red-700 text-white hover:bg-red-800 disabled:bg-red-300 disabled:text-white",
 };
 
 /**

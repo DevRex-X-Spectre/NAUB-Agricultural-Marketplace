@@ -1,6 +1,7 @@
 "use client";
 
 import { ListingStatusBadge } from "@/components/marketplace/status-badge";
+import { useSystemAlert } from "@/components/providers/system-alert-provider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { productRepository } from "@/lib/repositories";
@@ -11,6 +12,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AdminModerationPage() {
+  const { confirm } = useSystemAlert();
   const [flagged, setFlagged] = useState<Product[]>([]);
   const [all, setAll] = useState<Product[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
@@ -33,7 +35,13 @@ export default function AdminModerationPage() {
   }
 
   async function remove(id: number) {
-    if (!confirm("Permanently delete this listing?")) return;
+    const confirmed = await confirm({
+      title: "Permanently delete listing?",
+      message: `Listing #${id} will be removed for everyone. This action cannot be undone.`,
+      confirmLabel: "Delete permanently",
+      variant: "danger",
+    });
+    if (!confirmed) return;
     const res = await adminService.removeListing(id);
     setMsg(res.success ? `Removed listing #${id}` : res.error ?? "Failed");
     await load();

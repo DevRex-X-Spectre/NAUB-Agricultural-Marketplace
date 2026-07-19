@@ -5,6 +5,7 @@ import {
   type ListingFormValues,
 } from "@/components/marketplace/listing-form";
 import { useAuth } from "@/components/providers/auth-provider";
+import { useSystemAlert } from "@/components/providers/system-alert-provider";
 import { Button } from "@/components/ui/button";
 import { productService } from "@/lib/services";
 import type { Product } from "@/lib/types";
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 
 export default function EditListingPage() {
   const { user } = useAuth();
+  const { confirm } = useSystemAlert();
   const params = useParams();
   const router = useRouter();
   const id = Number(params.id);
@@ -51,7 +53,14 @@ export default function EditListingPage() {
 
   async function handleDelete() {
     if (!user) return;
-    if (!confirm("Delete this listing permanently?")) return;
+    const confirmed = await confirm({
+      title: "Delete listing?",
+      message:
+        "This listing will be permanently removed from the marketplace. This action cannot be undone.",
+      confirmLabel: "Delete listing",
+      variant: "danger",
+    });
+    if (!confirmed) return;
     const res = await productService.delete(id, user.id);
     if (res.success) router.push("/farmer/listings");
     else setError(res.error ?? "Delete failed");

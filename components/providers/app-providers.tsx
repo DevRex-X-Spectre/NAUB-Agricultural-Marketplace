@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { AuthProvider } from "./auth-provider";
+import { SystemAlertProvider } from "./system-alert-provider";
 
 const SeedReadyContext = createContext(false);
 
@@ -39,8 +40,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SeedReadyContext.Provider value={ready}>
-      <AuthProvider seedReady={ready}>{children}</AuthProvider>
-    </SeedReadyContext.Provider>
+    <SystemAlertProvider>
+      <SeedReadyContext.Provider value={ready}>
+        <AuthProvider seedReady={ready}>{children}</AuthProvider>
+      </SeedReadyContext.Provider>
+    </SystemAlertProvider>
   );
 }
